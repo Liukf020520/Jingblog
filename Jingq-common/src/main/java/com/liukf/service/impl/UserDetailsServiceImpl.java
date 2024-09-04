@@ -1,7 +1,7 @@
 package com.liukf.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.liukf.domain.entity.LonginUser;
+import com.liukf.domain.entity.LoginUser;
 import com.liukf.domain.entity.User;
 import com.liukf.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +31,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         //返回用户信息
         //TODO 查询权限信息封装
 
-        return new LonginUser(user);
+        return new LoginUser(user);
     }
 }

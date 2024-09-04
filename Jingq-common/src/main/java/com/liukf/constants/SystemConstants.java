@@ -16,5 +16,9 @@ public class SystemConstants
      *  友联审核状态-审核通过
      */
     public static final String LINK_STATUS_NORMAL = "0";
+    /**
+     * 根评论
+     */
+    public static final int ROOT_COMMENT = -1;
     
 }

@@ -1,7 +1,7 @@
 package com.liukf.service.impl;
 
 import com.liukf.domain.ResponseResult;
-import com.liukf.domain.entity.LonginUser;
+import com.liukf.domain.entity.LoginUser;
 import com.liukf.domain.entity.User;
 import com.liukf.domain.vo.BlogUserLoginVo;
 import com.liukf.domain.vo.UserInfoVo;
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -32,7 +33,7 @@ public class BlogLoginServiceImpl implements BlogLoginService {
             throw new RuntimeException("用户名或密码错误");
         }
         //获取userId 生成token
-        LonginUser loginUser = (LonginUser) authenticate.getPrincipal();
+        LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         String userId = loginUser.getUser().getId().toString();
         String jwt = JwtUtil.createJWT(userId);
         //把用户信息存入redis
@@ -43,5 +44,17 @@ public class BlogLoginServiceImpl implements BlogLoginService {
         BlogUserLoginVo vo = new BlogUserLoginVo(jwt,UserInfoVo);
 
         return ResponseResult.okResult(vo);
+    }
+
+    @Override
+    public ResponseResult logout() {
+        //获取token 解析获取userid
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        //获取userid
+        Long userId = loginUser.getUser().getId();
+        //删除redis中的用户信息
+        redisCache.deleteObject("bloglogin:"+userId);
+        return ResponseResult.okResult();
     }
 }
